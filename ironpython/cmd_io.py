@@ -20,6 +20,28 @@ p.Start()
 i = p.StandardInput
 o = p.StandardOutput
 
-from System import Array, Char
-buf = Array[Char](range(128))
-read = o.ReadAsync(buf, 0, 128)
+#from System import Array, Char
+#buf = Array[Char](range(128))
+#i.WriteLine("ipconfig")
+
+import threading
+
+stop = threading.Event()
+stop.clear()
+
+def worker(o):
+    while not stop.is_set():
+        #block until something is in the buffer
+        print o.ReadLine() 
+    print "thread exit!"
+
+    
+t = threading.Thread(target=worker, args=(o,))
+t.setDaemon = True
+t.start()
+
+i.WriteLine("ipconfig")
+import time
+time.sleep(5)
+stop.set()
+
